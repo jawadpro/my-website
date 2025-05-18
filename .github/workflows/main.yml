@@ -9,6 +9,10 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
@@ -17,26 +21,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # If you need to build (e.g., for frameworks like Jekyll, React, etc.)
-      # Add build steps here. For plain HTML, this isn't needed
-      # - name: Setup Node
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 18
-      # - run: npm install && npm run build
+        uses: actions/checkout@v3  # Changed from v4 to v3
 
       - name: Upload HTML artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v1  # Changed from v2 to v1
         with:
-          # Upload entire repository (or specify path to your HTML file)
-          path: ./
-          # If you only want to upload specific files:
-          # path: |
-          #   index.html
-          #   assets/
-          #   style.css
+          path: ./  # Or your specific directory like 'dist/'
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v2
+        id: deployment
+        uses: actions/deploy-pages@v1  # Changed from v2 to v1
